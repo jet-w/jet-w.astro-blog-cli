@@ -1,0 +1,52 @@
+{
+  "name": "@jet-w/astro-blog-cli",
+  "version": "0.1.8",
+  "description": "CLI tool for creating Astro blogs with @jet-w/astro-blog theme",
+  "type": "module",
+  "main": "./dist/index.js",
+  "bin": {
+    "astro-blog": "./dist/index.js",
+    "create-astro-blog": "./dist/index.js"
+  },
+  "files": [
+    "dist",
+    "templates"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "astro",
+    "blog",
+    "cli",
+    "create",
+    "template"
+  ],
+  "author": "Haiyue",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jet-w/astro-blog-cli"
+  },
+  "homepage": "https://github.com/jet-w/astro-blog-cli#readme",
+  "bugs": {
+    "url": "https://github.com/jet-w/astro-blog-cli/issues"
+  },
+  "dependencies": {
+    "@jet-w/astro-blog": "^0.1.4",
+    "chalk": "^5.3.0",
+    "commander": "^12.0.0",
+    "fs-extra": "^11.2.0",
+    "inquirer": "^9.2.0",
+    "ora": "^8.0.0"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^11.0.4",
+    "@types/inquirer": "^9.0.7",
+    "@types/node": "^20.0.0",
+    "tsup": "^8.0.0",
+    "typescript": "^5.7.0"
+  }
+}
