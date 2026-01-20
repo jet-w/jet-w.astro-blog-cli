@@ -28,11 +28,11 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/jet-w/astro-blog-cli"
+    "url": "https://github.com/jet-w/jet-w.astro-blog-cli.git"
   },
-  "homepage": "https://github.com/jet-w/astro-blog-cli#readme",
+  "homepage": "https://github.com/jet-w/jet-w.astro-blog-cli.git#readme",
   "bugs": {
-    "url": "https://github.com/jet-w/astro-blog-cli/issues"
+    "url": "https://github.com/jet-w/jet-w.astro-blog-cli/issues"
   },
   "dependencies": {
     "@jet-w/astro-blog": "^0.1.4",
