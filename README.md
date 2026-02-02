@@ -6,20 +6,7 @@ CLI tool for creating Astro blogs with [@jet-w/astro-blog](https://github.com/je
 
 ```bash
 # Create a new blog project
-npx create-astro-blog my-blog
-
-# Or use npm create
-npm create astro-blog my-blog
-```
-
-## Installation
-
-```bash
-# Global installation
-npm install -g @jet-w/astro-blog-cli
-
-# Then use
-astro-blog create my-blog
+npx @jet-w/astro-blog-cli my-blog
 ```
 
 ## Usage
@@ -29,7 +16,7 @@ astro-blog create my-blog
 Run without options to enter interactive mode:
 
 ```bash
-npx create-astro-blog
+npx @jet-w/astro-blog-cli
 ```
 
 You will be prompted for:
@@ -47,10 +34,10 @@ Use `-y` flag to skip prompts and use defaults or provided options:
 
 ```bash
 # Quick create with defaults
-npx create-astro-blog my-blog -y
+npx @jet-w/astro-blog-cli my-blog -y
 
 # With custom options
-npx create-astro-blog my-blog -y \
+npx @jet-w/astro-blog-cli my-blog -y \
   --title "My Awesome Blog" \
   --title-zh "我的博客" \
   --description "A blog about tech" \
@@ -67,7 +54,7 @@ npx create-astro-blog my-blog -y \
 Create a new Astro blog project.
 
 ```bash
-astro-blog create my-blog
+npx @jet-w/astro-blog-cli my-blog
 ```
 
 **Options:**
@@ -86,27 +73,12 @@ astro-blog create my-blog
 | `-y, --yes` | Skip prompts, use defaults | - |
 | `-f, --force` | Overwrite existing directory | - |
 
-### `init`
-
-Initialize an existing project with @jet-w/astro-blog dependency.
-
-```bash
-cd existing-project
-astro-blog init
-```
-
-**Options:**
-
-| Option | Description | Default |
-|--------|-------------|---------|
-| `--lang <lang>` | CLI language (`en`/`zh`) | Auto-detect |
-
 ## Examples
 
 ### Create a blog with all options
 
 ```bash
-npx create-astro-blog my-tech-blog -y \
+npx @jet-w/astro-blog-cli my-tech-blog -y \
   --title "Tech Notes" \
   --title-zh "技术笔记" \
   --description "Personal tech blog" \
@@ -119,13 +91,13 @@ npx create-astro-blog my-tech-blog -y \
 ### Create with Chinese CLI interface
 
 ```bash
-npx create-astro-blog my-blog --lang zh
+npx @jet-w/astro-blog-cli my-blog --lang zh
 ```
 
 ### Force overwrite existing directory
 
 ```bash
-npx create-astro-blog my-blog -y -f
+npx @jet-w/astro-blog-cli my-blog -y -f
 ```
 
 ## After Creation
