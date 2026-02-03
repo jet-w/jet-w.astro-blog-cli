@@ -6,6 +6,7 @@ import fs from 'fs-extra';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { createRequire } from 'module';
+import { execSync } from 'child_process';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -68,6 +69,9 @@ Happy writing! 🎉
 Please run the following command to install dependencies:
   {install}
 `,
+    installingTemplate: 'Installing @jet-w/astro-blog template package...',
+    templateInstallSuccess: '@jet-w/astro-blog installed successfully',
+    templateInstallFailed: 'Failed to install @jet-w/astro-blog',
   },
   zh: {
     welcome: '🚀 @jet-w/astro-blog CLI',
@@ -107,6 +111,9 @@ Please run the following command to install dependencies:
 请运行以下命令安装依赖:
   {install}
 `,
+    installingTemplate: '正在安装 @jet-w/astro-blog 模板包...',
+    templateInstallSuccess: '@jet-w/astro-blog 安装成功',
+    templateInstallFailed: '安装 @jet-w/astro-blog 失败',
   }
 };
 
@@ -124,20 +131,7 @@ function detectSystemLanguage(): Lang {
   return 'en';
 }
 
-async function findTemplateDir(templateName: string): Promise<string> {
-  // Priority 1: CLI package's own templates directory (bundled)
-  const cliTemplatePaths = [
-    path.join(__dirname, '..', 'templates', templateName),
-    path.join(__dirname, 'templates', templateName),
-  ];
-
-  for (const p of cliTemplatePaths) {
-    if (fs.existsSync(p)) {
-      return p;
-    }
-  }
-
-  // Priority 2: Try to resolve from @jet-w/astro-blog package
+function tryResolveTemplateFromPackage(templateName: string): string | null {
   try {
     const corePkgPath = require.resolve('@jet-w/astro-blog/package.json', {
       paths: [process.cwd(), __dirname]
@@ -148,14 +142,16 @@ async function findTemplateDir(templateName: string): Promise<string> {
       return templatePath;
     }
   } catch {
-    // Package not installed, continue to fallback
+    // Package not installed
   }
+  return null;
+}
 
-  // Priority 3: Development environment (monorepo)
+function tryResolveTemplateFromDev(templateName: string): string | null {
+  // Development environment (monorepo)
   const devPaths = [
     path.join(__dirname, '..', '..', '@jet-w.astro-blog', 'templates', templateName),
     path.join(__dirname, '..', '..', '..', '@jet-w.astro-blog', 'templates', templateName),
-    path.join(__dirname, '..', '..', '@jet-w.astro-blog-cli', 'templates', templateName),
   ];
 
   for (const p of devPaths) {
@@ -163,8 +159,49 @@ async function findTemplateDir(templateName: string): Promise<string> {
       return p;
     }
   }
+  return null;
+}
 
-  throw new Error(`Template "${templateName}" not found. Checked paths:\n${cliTemplatePaths.join('\n')}`);
+async function installAstroBlogPackage(lang: Lang): Promise<void> {
+  const msg = getMessages(lang);
+  const spinner = ora(msg.installingTemplate).start();
+
+  try {
+    // Install @jet-w/astro-blog globally to CLI's node_modules
+    execSync('npm install @jet-w/astro-blog --no-save', {
+      cwd: path.join(__dirname, '..'),
+      stdio: 'pipe'
+    });
+    spinner.succeed(chalk.green(msg.templateInstallSuccess));
+  } catch (error) {
+    spinner.fail(chalk.red(msg.templateInstallFailed));
+    throw error;
+  }
+}
+
+async function findTemplateDir(templateName: string, lang: Lang): Promise<string> {
+  // Priority 1: Try to resolve from @jet-w/astro-blog package (installed via npm)
+  let templatePath = tryResolveTemplateFromPackage(templateName);
+  if (templatePath) {
+    return templatePath;
+  }
+
+  // Priority 2: Development environment (monorepo)
+  templatePath = tryResolveTemplateFromDev(templateName);
+  if (templatePath) {
+    return templatePath;
+  }
+
+  // Priority 3: Package not found, install it automatically
+  await installAstroBlogPackage(lang);
+
+  // Try again after installation
+  templatePath = tryResolveTemplateFromPackage(templateName);
+  if (templatePath) {
+    return templatePath;
+  }
+
+  throw new Error(`Template "${templateName}" not found even after installing @jet-w/astro-blog.`);
 }
 
 async function updateProjectFiles(targetDir: string, config: ProjectOptions) {
@@ -359,7 +396,7 @@ program
 
     try {
       // Find and copy template
-      const templateDir = await findTemplateDir(config.template);
+      const templateDir = await findTemplateDir(config.template, lang);
       await fs.copy(templateDir, targetDir);
 
       // Update project files with user configuration

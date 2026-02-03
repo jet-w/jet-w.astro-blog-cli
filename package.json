@@ -9,8 +9,7 @@
     "create-astro-blog": "./dist/index.js"
   },
   "files": [
-    "dist",
-    "templates"
+    "dist"
   ],
   "scripts": {
     "build": "tsup",
